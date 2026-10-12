@@ -1,0 +1,17 @@
+[package]
+name = "dcsctp-py"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+name = "_core"
+
+[dependencies]
+# SCTP (Data Channel 向け) 実装本体
+dcsctp = "0.1"
+# Python バインディング。experimental-inspect で .pyi 自動生成用の introspect データを埋め込む
+pyo3 = { version = "0.29", features = ["experimental-inspect", "extension-module"] }
+# Rust の log 出力を Python logging に橋渡しする
+pyo3-log = "0.13"

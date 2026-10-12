@@ -1,0 +1,68 @@
+[project]
+name = "dcsctp"
+version = "0.1.0"
+description = "Python bindings for dcsctp (SCTP implementation for WebRTC Data Channels)"
+requires-python = ">=3.12"
+authors = [{ name = "Shiguredo Inc." }]
+classifiers = [
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: Free Threading :: 2 - Beta",
+  "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = []
+
+[dependency-groups]
+# ruff / ty は prek.toml のフックが自前で用意するため、ここには含めない
+dev = [
+  "maturin>=1.14.1,<2.0",
+  "pytest",
+]
+
+[build-system]
+# maturin 1.14+ で --generate-stubs / generate-stubs に対応している
+requires = ["maturin>=1.14.1,<2.0"]
+build-backend = "maturin"
+
+[tool.maturin]
+manifest-path = "Cargo.toml"
+module-name = "dcsctp._core"
+python-source = "python"
+
+[tool.pytest.ini_options]
+addopts = ["-ra", "--strict-markers", "--strict-config"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+# 自動生成された .pyi は formatter / linter の対象外にする
+exclude = ["python/dcsctp/_core.pyi"]
+
+[tool.ruff.lint]
+select = [
+  "E",
+  "W",
+  "F",
+  "I",
+  "B",
+  "UP",
+  "SIM",
+  "C4",
+  "PT",
+  "ANN",
+  "RUF",
+]
+ignore = []
+
+[tool.ty]
+
+# 拡張モジュール `_core` のスタブは maturin が生成する (リポジトリには置かない)
+# ため、スタブが無い環境 (CI など) でも未解決扱いにしない
+[tool.ty.analysis]
+allowed-unresolved-imports = ["dcsctp._core"]
+
+# 自動生成された .pyi は型チェッカの対象外にする
+[tool.ty.src]
+exclude = ["python/dcsctp/_core.pyi"]

@@ -1,0 +1,28 @@
+name: test
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    # Rust (maturin) で拡張モジュールをビルドする必要があり、ubuntu-slim には
+    # Rust が入っていないため ubuntu-24.04 を使う
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          python-version: "3.14"
+
+      # prek.toml のフック (ruff / ty / cargo fmt / cargo clippy / pytest) を実行する。
+      # pytest は uv run 経由で maturin が拡張モジュールをビルドする
+      - uses: j178/prek-action@4e14d07f9231acabce116ccfca13b13dd9755ece # v3.0.0
+        with:
+          prek-version: 0.5.5
